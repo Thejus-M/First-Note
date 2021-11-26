@@ -29,8 +29,18 @@ def hello():
     allTodo  = Todo.query.all()
     return render_template('index.html',allTodo=allTodo)
 
-@app.route('/update/<int:sno>')
-def update(sno):    
+@app.route('/update/<int:sno>',methods=['POST','GET'])
+def update(sno):   
+    if request.method == 'POST' :
+        title = request.form['title']
+        desc = request.form['desc']
+
+        todo = Todo.query.filter_by(sno=sno).first()
+        todo.title = title
+        todo.desc = desc
+        db.session.add(todo)
+        db.session.commit() 
+        redirect('/')
     todo = Todo.query.filter_by(sno=sno).first()
     return render_template('update.html',todo=todo)
 
